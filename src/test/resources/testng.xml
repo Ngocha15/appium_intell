@@ -1,0 +1,8 @@
+<suite name="Suite">
+    <test name="Test Flow">
+        <classes>
+            <class name="tests.SignUpTestCase"/>
+            <class name="tests.OrderTestCase"/>
+        </classes>
+    </test>
+</suite>
