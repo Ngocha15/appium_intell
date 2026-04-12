@@ -19,11 +19,13 @@ public class SignupPage {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
-    // ===== LOCATORS (dùng chung locator cho EditText) =====
+        // ===== LOCATORS (dùng chung locator cho EditText) =====
 
-        private WebElement getFieldByAccessibilityId(String accessibilityId) {
+        private WebElement getFieldByXPath(String resourceId) {
         return wait.until(ExpectedConditions.elementToBeClickable(
-                AppiumBy.accessibilityId(accessibilityId)
+            AppiumBy.xpath(
+                "//android.widget.EditText[@resource-id='" + resourceId + "']/android.widget.EditText"
+            )
         ));
     }
 
@@ -55,15 +57,15 @@ public class SignupPage {
     }
 
     public void enterFullName(String fullName) {
-        inputText(getFieldByAccessibilityId("qa.signup.full_name_input"), fullName);
+        inputText(getFieldByXPath("qa.signup.full_name_input"), fullName);
     }
 
     public void enterEmail(String email) {
-        inputText(getFieldByAccessibilityId("qa.signup.email_input"), email);
+        inputText(getFieldByXPath("qa.signup.email_input"), email);
     }
 
     public void enterPassword(String password) {
-        inputText(getFieldByAccessibilityId("qa.signup.password_input"), password);
+        inputText(getFieldByXPath("qa.signup.password_input"), password);
     }
 
     public void clickCheckbox() {
