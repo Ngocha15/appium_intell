@@ -82,8 +82,8 @@ public class OrderTestCase extends BaseTest {
         productPage.selectFirstAvailableSizeIfPresent();
         productPage.selectFirstAvailableColorIfPresent();
 
-        productPage.clickAddToCartWithSnackbarCheck();
-        productPage.waitForAddToCartSuccess();
+        productPage.clickAddToCart();
+        productPage.settleAfterAddToCart();
 
         if (productPage.isBackButtonDisplayed()) {
             productPage.clickBackButton();
@@ -105,7 +105,7 @@ public class OrderTestCase extends BaseTest {
         productPage.selectFirstAvailableColorIfPresent();
 
         productPage.clickAddToCart();
-        productPage.waitForAddToCartSuccess();
+        productPage.settleAfterAddToCart();
         productPage.openCart();
 
         CartPage cartPage = new CartPage(driver);
