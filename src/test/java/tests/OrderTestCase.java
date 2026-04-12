@@ -24,6 +24,26 @@ public class OrderTestCase extends BaseTest {
         return new SignupPage(driver);
     }
 
+    private void backToHomeWithRetry(HomePage homePage) {
+        for (int attempt = 0; attempt < 3; attempt++) {
+            if (homePage.isHomeDisplayed()) {
+                homePage.waitUntilHomeReady();
+                return;
+            }
+
+            driver.navigate().back();
+
+            try {
+                homePage.waitUntilHomeReady();
+                return;
+            } catch (Exception ignored) {
+                // Retry sending back in case first back does not pop Product Details.
+            }
+        }
+
+        Assert.fail("Không thể quay lại màn Home sau khi thêm sản phẩm thứ nhất");
+    }
+
     @Test
     public void testOrder_PlacePickupOrder_Success() {
         long timestamp = System.currentTimeMillis();
@@ -58,9 +78,7 @@ public class OrderTestCase extends BaseTest {
 
         productPage.clickAddToCart();
         productPage.waitForAddToCartSuccess();
-
-        driver.navigate().back();
-        homePage.waitUntilHomeReady();
+        backToHomeWithRetry(homePage);
 
         String secondProductQaId = homePage.openFeaturedProductDifferentFrom(firstProductQaId);
         Assert.assertNotEquals(
