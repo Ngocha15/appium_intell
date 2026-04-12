@@ -45,11 +45,12 @@ public class ProductPage {
 	}
 
 	private By addToCartSuccessBy() {
-		// Try multiple XPath variations for snackbar detection
+		// More comprehensive snackbar detection
 		return AppiumBy.xpath(
 				"//android.widget.TextView[contains(@text,'Added to cart successfully!')] | " +
-				"//*[contains(translate(@text,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'added to cart successfully')] | " +
-				"//android.widget.FrameLayout//android.widget.TextView[contains(@text,'successfully')]"
+				"//android.widget.TextView[contains(@text,'added to cart')] | " +
+				"//*[contains(@text,'successfully')] | " +
+				"//android.view.ViewGroup//android.widget.TextView[contains(translate(@text,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'added')]"
 		);
 	}
 
@@ -72,6 +73,12 @@ public class ProductPage {
 
 	public void clickAddToCart() {
 		wait.until(d -> d.findElement(addToCartButtonBy())).click();
+	}
+
+	public void clickAddToCartWithSnackbarCheck() {
+		clickAddToCart();
+		// Check snackbar immediately after clicking
+		checkSnackbarInPageSource();
 	}
 
 	public boolean isBackButtonDisplayed() {
@@ -146,5 +153,34 @@ public class ProductPage {
 		System.out.println("===== PAGE SOURCE =====");
 		System.out.println(pageSource);
 		System.out.println("===== END PAGE SOURCE =====");
+	}
+
+	// Debug helper - check if snackbar appears in page source
+	public void checkSnackbarInPageSource() {
+		String pageSource = driver.getPageSource();
+		System.out.println("\n===== SNACKBAR DEBUG CHECK =====");
+		
+		if (pageSource.contains("Added to cart successfully")) {
+			System.out.println("✅ FOUND: 'Added to cart successfully' in page source");
+		} else if (pageSource.contains("added to cart")) {
+			System.out.println("✅ FOUND: 'added to cart' in page source");
+		} else if (pageSource.contains("successfully")) {
+			System.out.println("⚠️  FOUND: 'successfully' in page source (partial match)");
+		} else {
+			System.out.println("❌ NOT FOUND: No snackbar text detected");
+		}
+		
+		// Check for snackbar elements
+		List<WebElement> snackbars = driver.findElements(By.xpath("//*[contains(@text,'cart')]"));
+		System.out.println("Elements containing 'cart': " + snackbars.size());
+		
+		List<WebElement> successElements = driver.findElements(addToCartSuccessBy());
+		System.out.println("Elements matching snackbar XPath: " + successElements.size());
+		
+		if (!successElements.isEmpty()) {
+			System.out.println("Snackbar text: " + successElements.get(0).getText());
+		}
+		
+		System.out.println("===== END SNACKBAR DEBUG =====\n");
 	}
 }

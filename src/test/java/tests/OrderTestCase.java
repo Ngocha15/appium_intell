@@ -82,7 +82,7 @@ public class OrderTestCase extends BaseTest {
         productPage.selectFirstAvailableSizeIfPresent();
         productPage.selectFirstAvailableColorIfPresent();
 
-        productPage.clickAddToCart();
+        productPage.clickAddToCartWithSnackbarCheck();
         productPage.waitForAddToCartSuccess();
 
         if (productPage.isBackButtonDisplayed()) {
