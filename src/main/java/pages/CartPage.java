@@ -19,7 +19,7 @@ public class CartPage {
 
 	private By checkoutButtonBy() {
 		return AppiumBy.androidUIAutomator(
-				"new UiSelector().descriptionContains(\"qa.cart.checkout_button\")"
+				"new UiSelector().descriptionContains(\"qa.cart.summary.checkout_button\")"
 		);
 	}
 

@@ -48,7 +48,11 @@ public class OrderTestCase extends BaseTest {
         ProductPage productPage = new ProductPage(driver);
         Assert.assertTrue(productPage.isDisplayed(), "Không mở được màn Product Details");
 
+        productPage.selectFirstAvailableSizeIfPresent();
+        productPage.selectFirstAvailableColorIfPresent();
+
         productPage.clickAddToCart();
+        productPage.waitForAddToCartSuccess();
         productPage.openCart();
 
         CartPage cartPage = new CartPage(driver);
