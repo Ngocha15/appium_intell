@@ -64,6 +64,7 @@ public class OrderTestCase extends BaseTest {
         signupPage.enterPassword("Abc@1234");
         signupPage.clickCheckbox();
         signupPage.clickSignupButton();
+        homePage.waitUntilHomeReady();
 
         Assert.assertTrue(homePage.isHomeDisplayed(), "Không vào được Home sau signup");
         Assert.assertTrue(homePage.isUserLoggedIn(fullName), "Sai tên user sau signup");
