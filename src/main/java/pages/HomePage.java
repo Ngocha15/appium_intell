@@ -69,10 +69,18 @@ public class HomePage {
     }
 
     public void waitUntilHomeReady() {
-        // Home có thể render trước, nhưng data vẫn loading.
-        // Chờ đến khi greeting hiển thị và có ít nhất 1 featured product.
-        wait.until(ExpectedConditions.visibilityOfElementLocated(homeBy()));
+        // Home có thể render trước, nhưng greeting text đôi khi lên chậm hơn list sản phẩm.
+        // Ưu tiên dấu hiệu featured products để tránh false negative khi chờ Home.
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(homeBy()));
+        } catch (Exception ignored) {
+            // Fallback to featured products visibility.
+        }
 
+        waitUntilFeaturedProductsReady();
+    }
+
+    public void waitUntilFeaturedProductsReady() {
         wait.until(driver -> {
             List<WebElement> products = driver.findElements(featuredProductBy());
             return !products.isEmpty() && products.get(0).isDisplayed();

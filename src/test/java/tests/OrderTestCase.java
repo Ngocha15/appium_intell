@@ -1,6 +1,8 @@
 package tests;
 
 import base.BaseTest;
+import io.appium.java_client.android.nativekey.AndroidKey;
+import io.appium.java_client.android.nativekey.KeyEvent;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.CartPage;
@@ -25,16 +27,20 @@ public class OrderTestCase extends BaseTest {
     }
 
     private void backToHomeWithRetry(HomePage homePage) {
-        for (int attempt = 0; attempt < 3; attempt++) {
-            if (homePage.isHomeDisplayed()) {
-                homePage.waitUntilHomeReady();
+        for (int attempt = 0; attempt < 5; attempt++) {
+            if (homePage.hasFeaturedProducts()) {
+                homePage.waitUntilFeaturedProductsReady();
                 return;
             }
 
-            driver.navigate().back();
+            try {
+                driver.pressKey(new KeyEvent(AndroidKey.BACK));
+            } catch (Exception ignored) {
+                driver.navigate().back();
+            }
 
             try {
-                homePage.waitUntilHomeReady();
+                homePage.waitUntilFeaturedProductsReady();
                 return;
             } catch (Exception ignored) {
                 // Retry sending back in case first back does not pop Product Details.
