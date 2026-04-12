@@ -2,8 +2,8 @@ package base;
 
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 
 import java.net.URL;
 import java.time.Duration;
@@ -11,8 +11,10 @@ import java.time.Duration;
 public class BaseTest {
 
     protected AndroidDriver driver;
+    private static final String APP_PACKAGE = "com.thinhan.shoestore.stg";
+    private static final String APP_ACTIVITY = "com.thinhan.shoestore.MainActivity";
 
-    @BeforeClass
+    @BeforeMethod
     public void setUp() throws Exception {
 
         UiAutomator2Options options = new UiAutomator2Options();
@@ -21,8 +23,10 @@ public class BaseTest {
         options.setDeviceName("e7a425eb87f2");
         options.setAutomationName("UiAutomator2");
 
-        options.setAppPackage("com.thinhan.shoestore.stg");
-        options.setAppActivity("com.thinhan.shoestore.MainActivity");
+        options.setAppPackage(APP_PACKAGE);
+        options.setAppActivity(APP_ACTIVITY);
+        options.setCapability("appium:noReset", false);
+        options.setCapability("appium:fullReset", false);
 
         options.setCapability("appium:unicodeKeyboard", true);
         options.setCapability("appium:resetKeyboard", true);
@@ -34,14 +38,14 @@ public class BaseTest {
 
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
-        System.out.println("App started successfully");
+        System.out.println("App started successfully for test method");
     }
 
-    @AfterClass
+    @AfterMethod
     public void tearDown() {
         if (driver != null) {
             driver.quit();
-            System.out.println("App closed");
+            System.out.println("App closed for test method");
         }
     }
 }
