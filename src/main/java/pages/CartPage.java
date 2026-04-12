@@ -4,6 +4,7 @@ import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -50,23 +51,31 @@ public class CartPage {
 	}
 
 	public void proceedToCheckout() {
-		driver.findElement(checkoutButtonBy()).click();
+		wait.until(ExpectedConditions.elementToBeClickable(checkoutButtonBy())).click();
 	}
 
 	public void waitForUiStableBeforeCheckout() {
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-		}
+		wait.until(d -> {
+			List<WebElement> checkoutButtons = d.findElements(checkoutButtonBy());
+			if (checkoutButtons.isEmpty()) {
+				return false;
+			}
+
+			WebElement btn = checkoutButtons.get(0);
+			return btn.isDisplayed() && btn.isEnabled();
+		});
 	}
 
 	public void deleteCartItemAtIndex(int index) {
+		int beforeCount = driver.findElements(cartItemCardBy()).size();
+
 		List<WebElement> deleteButtons = wait.until(driver -> {
 			List<WebElement> found = driver.findElements(cartItemDeleteButtonBy());
 			return found.size() > index ? found : null;
 		});
 
 		deleteButtons.get(index).click();
+
+		wait.until(d -> d.findElements(cartItemCardBy()).size() < beforeCount);
 	}
 }
