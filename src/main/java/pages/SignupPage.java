@@ -21,11 +21,9 @@ public class SignupPage {
 
     // ===== LOCATORS (dùng chung locator cho EditText) =====
 
-    private WebElement getFieldByQaId(String qaId) {
+        private WebElement getFieldByResourceId(String resourceId) {
         return wait.until(ExpectedConditions.elementToBeClickable(
-                AppiumBy.androidUIAutomator(
-                        "new UiSelector().descriptionContains(\"" + qaId + "\")"
-                )
+            AppiumBy.id(resourceId)
         ));
     }
 
@@ -57,15 +55,15 @@ public class SignupPage {
     }
 
     public void enterFullName(String fullName) {
-        inputText(getFieldByQaId("qa.signup.full_name_input"), fullName);
+        inputText(getFieldByResourceId("qa.signup.full_name_input"), fullName);
     }
 
     public void enterEmail(String email) {
-        inputText(getFieldByQaId("qa.signup.email_input"), email);
+        inputText(getFieldByResourceId("qa.signup.email_input"), email);
     }
 
     public void enterPassword(String password) {
-        inputText(getFieldByQaId("qa.signup.password_input"), password);
+        inputText(getFieldByResourceId("qa.signup.password_input"), password);
     }
 
     public void clickCheckbox() {
