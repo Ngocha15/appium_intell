@@ -92,6 +92,15 @@ public class HomePage {
         products.get(0).click();
     }
 
+    public String getFeaturedProductQaIdAtIndex(int index) {
+        List<WebElement> products = wait.until(driver -> {
+            List<WebElement> found = driver.findElements(featuredProductBy());
+            return found.size() > index ? found : null;
+        });
+
+        return products.get(index).getAttribute("content-desc");
+    }
+
     public void openFeaturedProductAtIndex(int index) {
         List<WebElement> products = wait.until(driver -> {
             List<WebElement> found = driver.findElements(featuredProductBy());
@@ -99,6 +108,23 @@ public class HomePage {
         });
 
         products.get(index).click();
+    }
+
+    public String openFeaturedProductDifferentFrom(String excludedQaId) {
+        List<WebElement> products = wait.until(driver -> {
+            List<WebElement> found = driver.findElements(featuredProductBy());
+            return found.size() > 1 ? found : null;
+        });
+
+        for (WebElement product : products) {
+            String qaId = product.getAttribute("content-desc");
+            if (qaId != null && !qaId.equals(excludedQaId)) {
+                product.click();
+                return qaId;
+            }
+        }
+
+        throw new IllegalStateException("Không tìm thấy featured product khác sản phẩm đầu tiên");
     }
     
 }

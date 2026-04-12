@@ -43,6 +43,7 @@ public class OrderTestCase extends BaseTest {
         Assert.assertTrue(homePage.isUserLoggedIn(fullName), "Sai tên user sau signup");
         Assert.assertTrue(homePage.hasFeaturedProducts(), "Không có featured products để chọn");
 
+        String firstProductQaId = homePage.getFeaturedProductQaIdAtIndex(0);
         homePage.openFeaturedProductAtIndex(0);
 
         ProductPage productPage = new ProductPage(driver);
@@ -57,7 +58,12 @@ public class OrderTestCase extends BaseTest {
         driver.navigate().back();
         homePage.waitUntilHomeReady();
 
-        homePage.openFeaturedProductAtIndex(1);
+        String secondProductQaId = homePage.openFeaturedProductDifferentFrom(firstProductQaId);
+        Assert.assertNotEquals(
+            secondProductQaId,
+            firstProductQaId,
+            "Sản phẩm thứ 2 phải khác sản phẩm thứ nhất"
+        );
 
         productPage = new ProductPage(driver);
         Assert.assertTrue(productPage.isDisplayed(), "Không mở được màn Product Details cho sản phẩm thứ 2");
