@@ -3,9 +3,11 @@ package pages;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class CartPage {
 
@@ -29,6 +31,12 @@ public class CartPage {
 		);
 	}
 
+	private By cartItemDeleteButtonBy() {
+		return AppiumBy.androidUIAutomator(
+				"new UiSelector().descriptionContains(\"qa.cart.item.delete_button.\")"
+		);
+	}
+
 	public boolean isDisplayed() {
 		try {
 			return wait.until(d -> d.findElement(checkoutButtonBy())).isDisplayed();
@@ -43,5 +51,14 @@ public class CartPage {
 
 	public void proceedToCheckout() {
 		wait.until(d -> d.findElement(checkoutButtonBy())).click();
+	}
+
+	public void deleteCartItemAtIndex(int index) {
+		List<WebElement> deleteButtons = wait.until(driver -> {
+			List<WebElement> found = driver.findElements(cartItemDeleteButtonBy());
+			return found.size() > index ? found : null;
+		});
+
+		deleteButtons.get(index).click();
 	}
 }

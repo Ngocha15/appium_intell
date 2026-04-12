@@ -3,13 +3,23 @@ package pages;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class OrderSuccessPage {
 
 	private final AndroidDriver driver;
+	private final WebDriverWait wait;
 
 	public OrderSuccessPage(AndroidDriver driver) {
 		this.driver = driver;
+		this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+	}
+
+	private By myOrdersTitleBy() {
+		return AppiumBy.xpath("//android.widget.TextView[@text='My Orders']");
 	}
 
 	private By myOrdersSearchBy() {
@@ -25,7 +35,16 @@ public class OrderSuccessPage {
 	}
 
 	public boolean isMyOrdersPageVisible() {
-		return !driver.findElements(myOrdersSearchBy()).isEmpty();
+		try {
+			return wait.until(ExpectedConditions.visibilityOfElementLocated(myOrdersTitleBy()))
+					.isDisplayed();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public void waitUntilMyOrdersPageVisible() {
+		wait.until(ExpectedConditions.visibilityOfElementLocated(myOrdersTitleBy()));
 	}
 
 	public boolean hasAnyOrderCard() {

@@ -91,5 +91,14 @@ public class HomePage {
 
         products.get(0).click();
     }
+
+    public void openFeaturedProductAtIndex(int index) {
+        List<WebElement> products = wait.until(driver -> {
+            List<WebElement> found = driver.findElements(featuredProductBy());
+            return found.size() > index ? found : null;
+        });
+
+        products.get(index).click();
+    }
     
 }
