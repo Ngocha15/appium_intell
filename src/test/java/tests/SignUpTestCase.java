@@ -23,13 +23,17 @@ public class SignUpTestCase extends BaseTest {
 
     // ===== NEGATIVE TEST CASES =====
     @Test
-    public void testSignup_InvalidFullName_WithNumber() {
+    public void testSignup_InvalidFullName_Empty() {
         SignupPage signupPage = navigateToSignup();
         signupPage.enterFullName("");
         signupPage.enterEmail("user@gmail.com");
         signupPage.enterPassword("Abc@1234");
         signupPage.clickCheckbox();
-        signupPage.clickSignupButton();
+
+        Assert.assertTrue(
+            !signupPage.isSignupButtonEnabled(),
+            "Nút Sign Up vẫn bật khi full name không hợp lệ"
+        );
 
 
     }
@@ -42,11 +46,10 @@ public class SignUpTestCase extends BaseTest {
         signupPage.enterEmail("abc.com");
         signupPage.enterPassword("Abc@1234");
         signupPage.clickCheckbox();
-        signupPage.clickSignupButton();
 
         Assert.assertTrue(
-                signupPage.isEmailErrorDisplayed(),
-                "Không hiển thị lỗi Email"
+            !signupPage.isSignupButtonEnabled(),
+            "Nút Sign Up vẫn bật khi email không hợp lệ"
         );
     }
 
@@ -57,11 +60,10 @@ public class SignUpTestCase extends BaseTest {
         signupPage.enterEmail("user@gmail.com");
         signupPage.enterPassword("123"); // < 8 ký tự
         signupPage.clickCheckbox();
-        signupPage.clickSignupButton();
 
         Assert.assertTrue(
-                signupPage.isPasswordErrorDisplayed(),
-                "Không hiển thị lỗi Password"
+            !signupPage.isSignupButtonEnabled(),
+            "Nút Sign Up vẫn bật khi password không hợp lệ"
         );
     }
 
@@ -73,11 +75,10 @@ public class SignUpTestCase extends BaseTest {
         signupPage.enterEmail("user@gmail.com");
         signupPage.enterPassword("Abc@1234");
         // KHÔNG click checkbox
-        signupPage.clickSignupButton();
 
         Assert.assertTrue(
-                signupPage.isCheckboxErrorDisplayed(),
-                "Không hiển thị lỗi checkbox"
+            !signupPage.isSignupButtonEnabled(),
+            "Nút Sign Up vẫn bật khi chưa tick checkbox"
         );
     }
 
@@ -88,13 +89,14 @@ public class SignUpTestCase extends BaseTest {
 
         System.out.println("Start Signup Positive Test");
 
-        String fullName = "User" + System.currentTimeMillis();
+        long timestamp = System.currentTimeMillis();
+        String fullName = "User" + timestamp;
 
         SignupPage signupPage = navigateToSignup();
         HomePage homePage = new HomePage(driver);
 
         signupPage.enterFullName(fullName);
-        signupPage.enterEmail("user" + System.currentTimeMillis() + "@gmail.com");
+        signupPage.enterEmail("user" + timestamp + "@gmail.com");
         signupPage.enterPassword("Abc@1234");
         signupPage.clickCheckbox();
         signupPage.clickSignupButton();

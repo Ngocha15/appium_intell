@@ -15,7 +15,9 @@ public class OnboardingPage {
 
     public void clickSkip() {
         driver.findElement(
-                AppiumBy.xpath("//android.view.View[@content-desc='Skip']")
+            AppiumBy.androidUIAutomator(
+                "new UiSelector().descriptionContains(\"qa.onboarding.skip_button\")"
+            )
         ).click();
     }
 

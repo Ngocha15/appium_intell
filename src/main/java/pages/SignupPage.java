@@ -21,21 +21,27 @@ public class SignupPage {
 
     // ===== LOCATORS (dùng chung locator cho EditText) =====
 
-    private WebElement getFieldByIndex(int index) {
-        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
-                AppiumBy.className("android.widget.EditText")
-        )).get(index);
+    private WebElement getFieldByQaId(String qaId) {
+        return wait.until(ExpectedConditions.elementToBeClickable(
+                AppiumBy.androidUIAutomator(
+                        "new UiSelector().descriptionContains(\"" + qaId + "\")"
+                )
+        ));
     }
 
     private WebElement chkAgree() {
         return wait.until(ExpectedConditions.elementToBeClickable(
-                AppiumBy.xpath("//android.widget.CheckBox")
+            AppiumBy.androidUIAutomator(
+                "new UiSelector().descriptionContains(\"qa.signup.terms_checkbox\")"
+            )
         ));
     }
 
     private WebElement btnSignUp() {
         return wait.until(ExpectedConditions.elementToBeClickable(
-                AppiumBy.xpath("//android.widget.Button[@content-desc='Sign Up']")
+            AppiumBy.androidUIAutomator(
+                "new UiSelector().descriptionContains(\"qa.signup.submit_button\")"
+            )
         ));
     }
 
@@ -51,15 +57,15 @@ public class SignupPage {
     }
 
     public void enterFullName(String fullName) {
-        inputText(getFieldByIndex(0), fullName);
+        inputText(getFieldByQaId("qa.signup.full_name_input"), fullName);
     }
 
     public void enterEmail(String email) {
-        inputText(getFieldByIndex(1), email);
+        inputText(getFieldByQaId("qa.signup.email_input"), email);
     }
 
     public void enterPassword(String password) {
-        inputText(getFieldByIndex(2), password);
+        inputText(getFieldByQaId("qa.signup.password_input"), password);
     }
 
     public void clickCheckbox() {
@@ -70,38 +76,16 @@ public class SignupPage {
         btnSignUp().click();
     }
 
-    private final By fullNameError = AppiumBy.xpath("//*[contains(@content-desc,'full name')]");
-    private final By emailError = AppiumBy.xpath("//*[contains(@content-desc,'valid email')]");
-    private final By passwordError = AppiumBy.xpath("//*[contains(@content-desc,'Password')]");
-    private final By checkboxError = AppiumBy.xpath("//*[contains(@content-desc,'Terms')]");
-
-    public boolean isFullNameErrorDisplayed() {
-        try {
-            return wait.until(d -> d.findElement(fullNameError)).isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
+    private WebElement signupButton() {
+        return wait.until(d -> d.findElement(
+                AppiumBy.androidUIAutomator(
+                        "new UiSelector().descriptionContains(\"qa.signup.submit_button\")"
+                )));
     }
 
-    public boolean isEmailErrorDisplayed() {
+    public boolean isSignupButtonEnabled() {
         try {
-            return wait.until(d -> d.findElement(emailError)).isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public boolean isPasswordErrorDisplayed() {
-        try {
-            return wait.until(d -> d.findElement(passwordError)).isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public boolean isCheckboxErrorDisplayed() {
-        try {
-            return wait.until(d -> d.findElement(checkboxError)).isDisplayed();
+            return signupButton().isEnabled();
         } catch (Exception e) {
             return false;
         }

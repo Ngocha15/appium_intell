@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class HomePage {
 
@@ -20,14 +21,20 @@ public class HomePage {
 
     // ===== LOCATOR (By thay vì WebElement) =====
     private By greetingBy(String fullName) {
-        return AppiumBy.xpath(
-                "//android.view.View[contains(@content-desc,'Hi') and contains(@content-desc,'" + fullName + "')]"
+        return AppiumBy.androidUIAutomator(
+            "new UiSelector().descriptionContains(\"Hi\").descriptionContains(\"" + fullName + "\")"
         );
     }
 
     private By homeBy() {
-        return AppiumBy.xpath(
-                "//android.view.View[contains(@content-desc,'Hi')]"
+        return AppiumBy.androidUIAutomator(
+            "new UiSelector().descriptionContains(\"Hi\")"
+        );
+    }
+
+    private By featuredProductBy() {
+        return AppiumBy.androidUIAutomator(
+                "new UiSelector().descriptionContains(\"qa.home.featured_product.card.\")"
         );
     }
 
@@ -58,6 +65,19 @@ public class HomePage {
             System.out.println("Không vào được Home");
             return false;
         }
+    }
+
+    public boolean hasFeaturedProducts() {
+        return !driver.findElements(featuredProductBy()).isEmpty();
+    }
+
+    public void openFirstFeaturedProduct() {
+        List<WebElement> products = wait.until(driver -> {
+            List<WebElement> found = driver.findElements(featuredProductBy());
+            return found.isEmpty() ? null : found;
+        });
+
+        products.get(0).click();
     }
     
 }
