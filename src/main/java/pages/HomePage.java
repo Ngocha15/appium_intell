@@ -4,6 +4,7 @@ import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -65,6 +66,17 @@ public class HomePage {
             System.out.println("Không vào được Home");
             return false;
         }
+    }
+
+    public void waitUntilHomeReady() {
+        // Home có thể render trước, nhưng data vẫn loading.
+        // Chờ đến khi greeting hiển thị và có ít nhất 1 featured product.
+        wait.until(ExpectedConditions.visibilityOfElementLocated(homeBy()));
+
+        wait.until(driver -> {
+            List<WebElement> products = driver.findElements(featuredProductBy());
+            return !products.isEmpty() && products.get(0).isDisplayed();
+        });
     }
 
     public boolean hasFeaturedProducts() {

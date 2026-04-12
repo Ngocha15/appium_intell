@@ -12,6 +12,10 @@ import java.util.List;
 
 public class SignupPage {
 
+    public static final String FULL_NAME_VALIDATION_KEY = "qa.signup.full_name.validation_message";
+    public static final String EMAIL_VALIDATION_KEY = "qa.signup.email.validation_message";
+    public static final String PASSWORD_VALIDATION_KEY = "qa.signup.password.validation_message";
+
     AndroidDriver driver;
     WebDriverWait wait;
 
@@ -130,6 +134,26 @@ public class SignupPage {
             boolean isDisplayed = "true".equalsIgnoreCase(displayedAttr) || button.isDisplayed();
 
             return isEnabled && isClickable && isDisplayed;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public String getValidationMessage(String validationKey) {
+        By validationMessageBy = AppiumBy.androidUIAutomator(
+            "new UiSelector().descriptionContains(\"" + validationKey + "\")"
+        );
+
+        WebElement message = wait.until(ExpectedConditions.visibilityOfElementLocated(validationMessageBy));
+        return message.getText();
+    }
+
+    public boolean isValidationMessageDisplayed(String validationKey) {
+        try {
+            By validationMessageBy = AppiumBy.androidUIAutomator(
+                "new UiSelector().descriptionContains(\"" + validationKey + "\")"
+            );
+            return !driver.findElements(validationMessageBy).isEmpty();
         } catch (Exception e) {
             return false;
         }

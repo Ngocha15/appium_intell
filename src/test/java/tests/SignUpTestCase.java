@@ -100,6 +100,7 @@ public class SignUpTestCase extends BaseTest {
         signupPage.enterPassword("Abc@1234");
         signupPage.clickCheckbox();
         signupPage.clickSignupButton();
+        homePage.waitUntilHomeReady();
 
         // VERIFY
         Assert.assertTrue(
