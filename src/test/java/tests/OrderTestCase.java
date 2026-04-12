@@ -84,6 +84,11 @@ public class OrderTestCase extends BaseTest {
 
         productPage.clickAddToCart();
         productPage.waitForAddToCartSuccess();
+
+        if (productPage.isBackButtonDisplayed()) {
+            productPage.clickBackButton();
+        }
+
         backToHomeWithRetry(homePage);
 
         String secondProductQaId = homePage.openFeaturedProductDifferentFrom(firstProductQaId);

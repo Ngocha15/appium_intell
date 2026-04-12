@@ -26,6 +26,12 @@ public class ProductPage {
 		);
 	}
 
+	private By backButtonBy() {
+		return AppiumBy.xpath(
+				"//android.widget.ImageView[@content-desc='Back' or @content-desc='Navigate up']"
+		);
+	}
+
 	private By sizeOptionsBy() {
 		return AppiumBy.androidUIAutomator(
 				"new UiSelector().descriptionContains(\"qa.product_detail.size_option.\")"
@@ -60,6 +66,14 @@ public class ProductPage {
 
 	public void clickAddToCart() {
 		wait.until(d -> d.findElement(addToCartButtonBy())).click();
+	}
+
+	public boolean isBackButtonDisplayed() {
+		return !driver.findElements(backButtonBy()).isEmpty();
+	}
+
+	public void clickBackButton() {
+		wait.until(ExpectedConditions.elementToBeClickable(backButtonBy())).click();
 	}
 
 	public void selectFirstAvailableSizeIfPresent() {
