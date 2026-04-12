@@ -17,8 +17,8 @@ public class BaseTest {
 
         UiAutomator2Options options = new UiAutomator2Options();
         options.setPlatformName("Android");
-        options.setPlatformVersion("14");
-        options.setDeviceName("emulator-5554");
+        options.setPlatformVersion("13");
+        options.setDeviceName("e7a425eb87f2");
         options.setAutomationName("UiAutomator2");
 
         options.setAppPackage("com.thinhan.shoestore.stg");
@@ -28,7 +28,7 @@ public class BaseTest {
         options.setCapability("appium:resetKeyboard", true);
 
         driver = new AndroidDriver(
-                new URL("http://127.0.0.1:4723/wd/hub"),
+                new URL("http://192.168.0.119:4723/wd/hub"),
                 options
         );
 

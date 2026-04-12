@@ -12,13 +12,11 @@ public class SigningPage {
         this.driver = driver;
     }
 
-    private WebElement btnSignUp() {
-        return driver.findElement(
-                AppiumBy.xpath("//android.view.View[@content-desc='Sign Up']")
-        );
-    }
 
     public void clickSignUp() {
-        btnSignUp().click();
+        driver.findElement(
+                AppiumBy.androidUIAutomator(
+                        "new UiSelector().descriptionContains(\"qa.login.goto_signup_link\")"
+                )).click();
     }
 }
