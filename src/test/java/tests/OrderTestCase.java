@@ -117,6 +117,8 @@ public class OrderTestCase extends BaseTest {
 
         Assert.assertTrue(cartPage.hasCartItems(), "Cart bị rỗng sau khi xóa sản phẩm thứ 2");
 
+        cartPage.waitForUiStableBeforeCheckout();
+
         cartPage.proceedToCheckout();
 
         CheckoutPage checkoutPage = new CheckoutPage(driver);

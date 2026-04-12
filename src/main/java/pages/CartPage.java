@@ -53,6 +53,16 @@ public class CartPage {
 		wait.until(d -> d.findElement(checkoutButtonBy())).click();
 	}
 
+	public void waitForUiStableBeforeCheckout() {
+		try {
+			Thread.sleep(700);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+
+		wait.until(d -> d.findElement(checkoutButtonBy()).isDisplayed());
+	}
+
 	public void deleteCartItemAtIndex(int index) {
 		List<WebElement> deleteButtons = wait.until(driver -> {
 			List<WebElement> found = driver.findElements(cartItemDeleteButtonBy());
