@@ -19,7 +19,9 @@ public class OrderSuccessPage {
 	}
 
 	private By myOrdersTitleBy() {
-		return AppiumBy.xpath("//android.widget.TextView[@text='My Orders']");
+		return AppiumBy.androidUIAutomator(
+				"new UiSelector().descriptionContains(\"qa.my_orders.title_text\")"
+		);
 	}
 
 	private By myOrdersSearchBy() {
