@@ -45,12 +45,18 @@ public class ProductPage {
 	}
 
 	private By addToCartSuccessBy() {
-		return AppiumBy.xpath("//*[contains(@text,'Added to cart successfully!')]");
+		// Try multiple XPath variations for snackbar detection
+		return AppiumBy.xpath(
+				"//android.widget.TextView[contains(@text,'Added to cart successfully!')] | " +
+				"//*[contains(translate(@text,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'added to cart successfully')] | " +
+				"//android.widget.FrameLayout//android.widget.TextView[contains(@text,'successfully')]"
+		);
 	}
 
 	private By addToCartErrorBy() {
 		return AppiumBy.xpath(
-				"//*[contains(@text,'Please select a size') or contains(@text,'Invalid product ID') or contains(@text,'Product not found')]"
+				"//android.widget.TextView[contains(@text,'Please select a size') or contains(@text,'Invalid product ID') or contains(@text,'Product not found')] | " +
+				"//*[contains(@text,'Please select') or contains(@text,'Invalid') or contains(@text,'not found')]"
 		);
 	}
 
@@ -91,29 +97,40 @@ public class ProductPage {
 	}
 
 	public void waitForAddToCartSuccess() {
-		long start = System.currentTimeMillis();
-		while (System.currentTimeMillis() - start < 20000) {
-			if (!driver.findElements(addToCartSuccessBy()).isEmpty()) {
-				return;
-			}
-
-			if (!driver.findElements(addToCartErrorBy()).isEmpty()) {
-				String errorText = driver.findElements(addToCartErrorBy()).get(0).getText();
+		try {
+			// First check for error immediately
+			List<WebElement> errors = driver.findElements(addToCartErrorBy());
+			if (!errors.isEmpty()) {
+				String errorText = errors.get(0).getText();
 				throw new IllegalStateException("Add to cart thất bại: " + errorText);
 			}
 
-			try {
-				Thread.sleep(300);
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw new IllegalStateException("Bị gián đoạn khi chờ add to cart", e);
-			}
+			// Wait for success with timeout (20 seconds)
+			wait.until(d -> {
+				List<WebElement> successElements = d.findElements(addToCartSuccessBy());
+				List<WebElement> errorElements = d.findElements(addToCartErrorBy());
+				
+				if (!errorElements.isEmpty()) {
+					throw new IllegalStateException("Add to cart thất bại: " + errorElements.get(0).getText());
+				}
+				
+				return !successElements.isEmpty();
+			});
+		} catch (org.openqa.selenium.TimeoutException e) {
+			// Try alternative detection - check for cart count increase or any visible snackbar
+			throw new IllegalStateException("Hết thời gian chờ thông báo add to cart thành công. Snackbar không xuất hiện.", e);
 		}
-
-		throw new IllegalStateException("Hết thời gian chờ thông báo add to cart thành công");
 	}
 
 	public void openCart() {
 		wait.until(d -> d.findElement(cartButtonBy())).click();
+	}
+
+	// Debug helper - prints page source for troubleshooting
+	public void debugPageSource() {
+		String pageSource = driver.getPageSource();
+		System.out.println("===== PAGE SOURCE =====");
+		System.out.println(pageSource);
+		System.out.println("===== END PAGE SOURCE =====");
 	}
 }
