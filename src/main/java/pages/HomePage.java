@@ -83,6 +83,10 @@ public class HomePage {
         return !driver.findElements(featuredProductBy()).isEmpty();
     }
 
+    public boolean hasAtLeastFeaturedProducts(int count) {
+        return driver.findElements(featuredProductBy()).size() >= count;
+    }
+
     public void openFirstFeaturedProduct() {
         List<WebElement> products = wait.until(driver -> {
             List<WebElement> found = driver.findElements(featuredProductBy());
@@ -98,7 +102,12 @@ public class HomePage {
             return found.size() > index ? found : null;
         });
 
-        return products.get(index).getAttribute("content-desc");
+        WebElement product = products.get(index);
+        String qaId = product.getAttribute("content-desc");
+        if (qaId == null || qaId.isBlank()) {
+            qaId = product.getAttribute("description");
+        }
+        return (qaId == null || qaId.isBlank()) ? "index-" + index : qaId;
     }
 
     public void openFeaturedProductAtIndex(int index) {
@@ -116,12 +125,25 @@ public class HomePage {
             return found.size() > 1 ? found : null;
         });
 
+        String safeExcluded = (excludedQaId == null || excludedQaId.isBlank())
+            ? "index-0"
+            : excludedQaId;
+
+        int index = 0;
         for (WebElement product : products) {
             String qaId = product.getAttribute("content-desc");
-            if (qaId != null && !qaId.equals(excludedQaId)) {
+            if (qaId == null || qaId.isBlank()) {
+                qaId = product.getAttribute("description");
+            }
+            if (qaId == null || qaId.isBlank()) {
+                qaId = "index-" + index;
+            }
+
+            if (!qaId.equals(safeExcluded)) {
                 product.click();
                 return qaId;
             }
+            index++;
         }
 
         throw new IllegalStateException("Không tìm thấy featured product khác sản phẩm đầu tiên");

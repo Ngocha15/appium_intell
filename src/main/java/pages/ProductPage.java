@@ -42,6 +42,12 @@ public class ProductPage {
 		return AppiumBy.xpath("//*[contains(@text,'Added to cart successfully!')]");
 	}
 
+	private By addToCartErrorBy() {
+		return AppiumBy.xpath(
+				"//*[contains(@text,'Please select a size') or contains(@text,'Invalid product ID') or contains(@text,'Product not found')]"
+		);
+	}
+
 	private By cartButtonBy() {
 		return AppiumBy.androidUIAutomator(
 				"new UiSelector().descriptionContains(\"qa.product_detail.cart_button\")"
@@ -71,11 +77,26 @@ public class ProductPage {
 	}
 
 	public void waitForAddToCartSuccess() {
-		try {
-			wait.until(ExpectedConditions.visibilityOfElementLocated(addToCartSuccessBy()));
-		} catch (Exception ignored) {
-			wait.until(ExpectedConditions.elementToBeClickable(addToCartButtonBy()));
+		long start = System.currentTimeMillis();
+		while (System.currentTimeMillis() - start < 20000) {
+			if (!driver.findElements(addToCartSuccessBy()).isEmpty()) {
+				return;
+			}
+
+			if (!driver.findElements(addToCartErrorBy()).isEmpty()) {
+				String errorText = driver.findElements(addToCartErrorBy()).get(0).getText();
+				throw new IllegalStateException("Add to cart thất bại: " + errorText);
+			}
+
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw new IllegalStateException("Bị gián đoạn khi chờ add to cart", e);
+			}
 		}
+
+		throw new IllegalStateException("Hết thời gian chờ thông báo add to cart thành công");
 	}
 
 	public void openCart() {

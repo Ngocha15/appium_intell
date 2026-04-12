@@ -42,6 +42,10 @@ public class OrderTestCase extends BaseTest {
         Assert.assertTrue(homePage.isHomeDisplayed(), "Không vào được Home sau signup");
         Assert.assertTrue(homePage.isUserLoggedIn(fullName), "Sai tên user sau signup");
         Assert.assertTrue(homePage.hasFeaturedProducts(), "Không có featured products để chọn");
+        Assert.assertTrue(
+            homePage.hasAtLeastFeaturedProducts(2),
+            "Cần ít nhất 2 featured products để test luồng thêm 2 sản phẩm khác nhau"
+        );
 
         String firstProductQaId = homePage.getFeaturedProductQaIdAtIndex(0);
         homePage.openFeaturedProductAtIndex(0);
