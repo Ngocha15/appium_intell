@@ -82,20 +82,8 @@ public class OrderTestCase extends BaseTest {
         productPage.selectFirstAvailableSizeIfPresent();
         productPage.selectFirstAvailableColorIfPresent();
 
-        System.out.println("=== About to click Add to Cart ===");
         productPage.clickAddToCart();
-        
-        System.out.println("=== Waiting for success snackbar ===");
-        try {
-            productPage.waitForAddToCartSuccess();
-            System.out.println("=== Add to cart SUCCESS ===");
-        } catch (Exception e) {
-            System.out.println("=== Add to cart FAILED ===");
-            System.out.println("Exception: " + e.getMessage());
-            // Debug: Print page source to see what's actually on screen
-            productPage.debugPageSource();
-            throw e;
-        }
+        productPage.waitForAddToCartSuccess();
 
         if (productPage.isBackButtonDisplayed()) {
             productPage.clickBackButton();
