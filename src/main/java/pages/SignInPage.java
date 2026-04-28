@@ -158,11 +158,35 @@ public class SignInPage {
     }
 
     public String getEmailValidationText() {
-        return getValidationMessage("qa.login.email.validation_message");
+        return getValidationMessage(getEmailValidationId());
     }
 
     public String getPasswordValidationText() {
-        return getValidationMessage("qa.login.password.validation_message");
+        return getValidationMessage(getPasswordValidationId());
+    }
+
+    public String getEmailValidationId() {
+        return "qa.login.email.validation_message";
+    }
+
+    public String getPasswordValidationId() {
+        return "qa.login.password.validation_message";
+    }
+
+    public WebElement getValidationElement(String validationKey) {
+        By validationMessageBy = AppiumBy.androidUIAutomator(
+            "new UiSelector().descriptionContains(\"" + validationKey + "\")"
+        );
+
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(validationMessageBy));
+    }
+
+    public WebElement getEmailValidationElement() {
+        return getValidationElement(getEmailValidationId());
+    }
+
+    public WebElement getPasswordValidationElement() {
+        return getValidationElement(getPasswordValidationId());
     }
 
     public String getCommonErrorDialogContentText() {
