@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class SignInPage {
 
@@ -62,25 +63,98 @@ public class SignInPage {
         OnboardingPage onboarding = new OnboardingPage(driver);
         onboarding.skipIfDisplayed();
     }
+    // ===== LOCATORS + Helpers like SignupPage =====
+    private WebElement getFieldByXPath(String resourceId) {
+        return wait.until(driver -> {
+            By nested = AppiumBy.xpath(
+                "//android.widget.EditText[@resource-id='" + resourceId + "']/android.widget.EditText"
+            );
+            By direct = AppiumBy.xpath(
+                "//android.widget.EditText[@resource-id='" + resourceId + "']"
+            );
+
+            List<WebElement> nestedMatches = driver.findElements(nested);
+            if (!nestedMatches.isEmpty()) {
+                return nestedMatches.get(0);
+            }
+
+            List<WebElement> directMatches = driver.findElements(direct);
+            if (!directMatches.isEmpty()) {
+                return directMatches.get(0);
+            }
+
+            return null;
+        });
+    }
+
+    private By signInButtonContainerBy() {
+        return AppiumBy.androidUIAutomator(
+            "new UiSelector().descriptionContains(\"qa.login.sign_in_button\")"
+        );
+    }
+
+    private By nativeSignInButtonBy() {
+        return AppiumBy.xpath(
+            "//*[contains(@content-desc,'qa.login.sign_in_button')]//android.widget.Button"
+        );
+    }
+
+    private WebElement nativeSignInButton() {
+        return wait.until(driver -> {
+            List<WebElement> nativeButtons = driver.findElements(nativeSignInButtonBy());
+            if (!nativeButtons.isEmpty()) {
+                return nativeButtons.get(0);
+            }
+
+            List<WebElement> containers = driver.findElements(signInButtonContainerBy());
+            if (!containers.isEmpty()) {
+                return containers.get(0);
+            }
+
+            return null;
+        });
+    }
+
+    private WebElement btnSignIn() {
+        return wait.until(ExpectedConditions.elementToBeClickable(nativeSignInButton()));
+    }
+
+    private void inputText(WebElement el, String text) {
+        el.click();
+        el.clear();
+        el.sendKeys(text);
+        try {
+            driver.hideKeyboard();
+        } catch (Exception ignored) {}
+    }
 
     public void enterEmail(String email) {
-        WebElement emailInput = wait.until(ExpectedConditions.visibilityOfElementLocated(emailInputBy()));
-        emailInput.clear();
-        emailInput.sendKeys(email);
+        inputText(getFieldByXPath("qa.login.email_input"), email);
     }
 
     public void enterPassword(String password) {
-        WebElement passwordInput = wait.until(ExpectedConditions.visibilityOfElementLocated(passwordInputBy()));
-        passwordInput.clear();
-        passwordInput.sendKeys(password);
+        inputText(getFieldByXPath("qa.login.password_input"), password);
     }
 
     public void clickSignIn() {
-        wait.until(ExpectedConditions.elementToBeClickable(signInButtonBy())).click();
+        btnSignIn().click();
     }
 
     public boolean isSignInButtonEnabled() {
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(signInButtonBy())).isEnabled();
+        try {
+            WebElement button = nativeSignInButton();
+            String enabledAttr = button.getAttribute("enabled");
+            String clickableAttr = button.getAttribute("clickable");
+            String displayedAttr = button.getAttribute("displayed");
+
+            boolean isEnabled = "true".equalsIgnoreCase(enabledAttr) || button.isEnabled();
+            boolean isClickable = "true".equalsIgnoreCase(clickableAttr);
+            boolean isDisplayed = "true".equalsIgnoreCase(displayedAttr) || button.isDisplayed();
+
+            return isEnabled && isClickable && isDisplayed;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public String getEmailValidationText() {
@@ -96,5 +170,34 @@ public class SignInPage {
     public String getCommonErrorDialogContentText() {
         WebElement el = wait.until(ExpectedConditions.visibilityOfElementLocated(commonErrorDialogContentBy()));
         return el.getText();
+    }
+
+    public String getValidationMessage(String validationKey) {
+        By validationMessageBy = AppiumBy.androidUIAutomator(
+            "new UiSelector().descriptionContains(\"" + validationKey + "\")"
+        );
+
+        WebElement message = wait.until(ExpectedConditions.visibilityOfElementLocated(validationMessageBy));
+        return message.getText();
+    }
+
+    public boolean isValidationMessageDisplayed(String validationKey) {
+        try {
+            By validationMessageBy = AppiumBy.androidUIAutomator(
+                "new UiSelector().descriptionContains(\"" + validationKey + "\")"
+            );
+            return !driver.findElements(validationMessageBy).isEmpty();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // Convenience wrappers
+    public String getEmailValidationText() {
+        return getValidationMessage("qa.login.email.validation_message");
+    }
+
+    public String getPasswordValidationText() {
+        return getValidationMessage("qa.login.password.validation_message");
     }
 }
