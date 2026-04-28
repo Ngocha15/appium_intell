@@ -66,25 +66,13 @@ public class SignInPage {
         onboarding.skipIfDisplayed();
     }
     // ===== LOCATORS + Helpers like SignupPage =====
-    private WebElement getFieldByXPath(String resourceId) {
+    private WebElement getFieldById(String resourceId) {
         return wait.until(driver -> {
-            By nested = AppiumBy.xpath(
-                "//android.widget.EditText[@resource-id='" + resourceId + "']/android.widget.EditText"
-            );
-            By direct = AppiumBy.xpath(
-                "//android.widget.EditText[@resource-id='" + resourceId + "']"
-            );
-
-            List<WebElement> nestedMatches = driver.findElements(nested);
-            if (!nestedMatches.isEmpty()) {
-                return nestedMatches.get(0);
+            By direct = AppiumBy.id(resourceId);
+            List<WebElement> matches = driver.findElements(direct);
+            if (!matches.isEmpty()) {
+                return matches.get(0);
             }
-
-            List<WebElement> directMatches = driver.findElements(direct);
-            if (!directMatches.isEmpty()) {
-                return directMatches.get(0);
-            }
-
             return null;
         });
     }
@@ -131,11 +119,11 @@ public class SignInPage {
     }
 
     public void enterEmail(String email) {
-        inputText(getFieldByXPath("qa.login.email_input"), email);
+        inputText(getFieldById("qa.login.email_input"), email);
     }
 
     public void enterPassword(String password) {
-        inputText(getFieldByXPath("qa.login.password_input"), password);
+        inputText(getFieldById("qa.login.password_input"), password);
     }
 
     public void clickSignIn() {
