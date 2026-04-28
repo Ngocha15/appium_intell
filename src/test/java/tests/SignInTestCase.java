@@ -46,6 +46,18 @@ public class SignInTestCase extends BaseTest {
         );
     }
 
+    private By emailValidationBy() {
+        return AppiumBy.androidUIAutomator(
+            "new UiSelector().descriptionContains(\"qa.login.email.validation_message\")"
+        );
+    }
+
+    private By passwordValidationBy() {
+        return AppiumBy.androidUIAutomator(
+            "new UiSelector().descriptionContains(\"qa.login.password.validation_message\")"
+        );
+    }
+
     private By textBy(String text) {
         return AppiumBy.xpath("//*[contains(@text,\"" + text + "\")]");
     }
@@ -87,7 +99,7 @@ public class SignInTestCase extends BaseTest {
         }
 
         WebElement errorMessage = wait().until(
-            ExpectedConditions.visibilityOfElementLocated(textBy(EMPTY_EMAIL_MESSAGE))
+            ExpectedConditions.visibilityOfElementLocated(emailValidationBy())
         );
 
         Assert.assertEquals(
@@ -109,7 +121,7 @@ public class SignInTestCase extends BaseTest {
         }
 
         WebElement errorMessage = wait().until(
-            ExpectedConditions.visibilityOfElementLocated(textBy(EMPTY_PASSWORD_MESSAGE))
+            ExpectedConditions.visibilityOfElementLocated(passwordValidationBy())
         );
 
         Assert.assertEquals(
