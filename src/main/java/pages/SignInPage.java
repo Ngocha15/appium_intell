@@ -189,13 +189,4 @@ public class SignInPage {
             return false;
         }
     }
-
-    // Convenience wrappers
-    public String getEmailValidationText() {
-        return getValidationMessage("qa.login.email.validation_message");
-    }
-
-    public String getPasswordValidationText() {
-        return getValidationMessage("qa.login.password.validation_message");
-    }
 }
