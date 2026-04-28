@@ -22,6 +22,8 @@ public class SignInTestCase extends BaseTest {
         SignInPage signIn = new SignInPage(driver);
         signIn.open();
 
+        // Enter a character then delete it to trigger validation
+        signIn.enterEmail("a");
         signIn.enterEmail("");
         signIn.enterPassword("1233haah@");
 
@@ -42,6 +44,8 @@ public class SignInTestCase extends BaseTest {
         signIn.open();
 
         signIn.enterEmail("heheh@gmail.com");
+        // Enter a character then delete it to trigger validation
+        signIn.enterPassword("a");
         signIn.enterPassword("");
 
         if (signIn.isSignInButtonEnabled()) {
