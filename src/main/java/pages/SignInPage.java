@@ -158,13 +158,11 @@ public class SignInPage {
     }
 
     public String getEmailValidationText() {
-        WebElement el = wait.until(ExpectedConditions.visibilityOfElementLocated(emailValidationBy()));
-        return el.getText();
+        return getValidationMessage("qa.login.email.validation_message");
     }
 
     public String getPasswordValidationText() {
-        WebElement el = wait.until(ExpectedConditions.visibilityOfElementLocated(passwordValidationBy()));
-        return el.getText();
+        return getValidationMessage("qa.login.password.validation_message");
     }
 
     public String getCommonErrorDialogContentText() {
