@@ -32,7 +32,7 @@ public class SignInTestCase extends BaseTest {
         }
 
         Assert.assertEquals(
-            signIn.getEmailValidationText(),
+            signIn.getEmailValidationElement().getText(),
             SignInPage.EMPTY_EMAIL_MESSAGE,
             "Message khi bỏ trống email không đúng"
         );
@@ -53,7 +53,7 @@ public class SignInTestCase extends BaseTest {
         }
 
         Assert.assertEquals(
-            signIn.getPasswordValidationText(),
+            signIn.getPasswordValidationElement().getText(),
             SignInPage.EMPTY_PASSWORD_MESSAGE,
             "Message khi bỏ trống password không đúng"
         );
