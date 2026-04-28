@@ -9,7 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.HomePage;
-import pages.OnboardingPage;
+import pages.SignInPage;
 
 import java.time.Duration;
 
@@ -18,92 +18,22 @@ public class SignInTestCase extends BaseTest {
     private static final String EMPTY_EMAIL_MESSAGE = "Please enter your email";
     private static final String EMPTY_PASSWORD_MESSAGE = "Please enter your password";
 
-    private WebDriverWait wait() {
-        return new WebDriverWait(driver, Duration.ofSeconds(20));
-    }
-
-    private By emailInputBy() {
-        return AppiumBy.androidUIAutomator(
-            "new UiSelector().descriptionContains(\"qa.login.email_input\")"
-        );
-    }
-
-    private By passwordInputBy() {
-        return AppiumBy.androidUIAutomator(
-            "new UiSelector().descriptionContains(\"qa.login.password_input\")"
-        );
-    }
-
-    private By signInButtonBy() {
-        return AppiumBy.androidUIAutomator(
-            "new UiSelector().descriptionContains(\"qa.login.sign_in_button\")"
-        );
-    }
-
-    private By commonErrorDialogContentBy() {
-        return AppiumBy.androidUIAutomator(
-            "new UiSelector().descriptionContains(\"qa.common.error_dialog.content\")"
-        );
-    }
-
-    private By emailValidationBy() {
-        return AppiumBy.androidUIAutomator(
-            "new UiSelector().descriptionContains(\"qa.login.email.validation_message\")"
-        );
-    }
-
-    private By passwordValidationBy() {
-        return AppiumBy.androidUIAutomator(
-            "new UiSelector().descriptionContains(\"qa.login.password.validation_message\")"
-        );
-    }
-
-    private By textBy(String text) {
-        return AppiumBy.xpath("//*[contains(@text,\"" + text + "\")]");
-    }
-
-    private void navigateToSignIn() {
-        OnboardingPage onboarding = new OnboardingPage(driver);
-        onboarding.skipIfDisplayed();
-    }
-
-    private void enterEmail(String email) {
-        WebElement emailInput = wait().until(ExpectedConditions.visibilityOfElementLocated(emailInputBy()));
-        emailInput.clear();
-        emailInput.sendKeys(email);
-    }
-
-    private void enterPassword(String password) {
-        WebElement passwordInput = wait().until(ExpectedConditions.visibilityOfElementLocated(passwordInputBy()));
-        passwordInput.clear();
-        passwordInput.sendKeys(password);
-    }
-
-    private void clickSignIn() {
-        wait().until(ExpectedConditions.elementToBeClickable(signInButtonBy())).click();
-    }
-
-    private boolean isSignInButtonEnabled() {
-        return wait().until(ExpectedConditions.visibilityOfElementLocated(signInButtonBy())).isEnabled();
-    }
+    // Use SignInPage for all sign-in interactions
 
     @Test
     public void testSignin_EmptyEmail_ShowRequiredMessage() {
-        navigateToSignIn();
+        SignInPage signIn = new SignInPage(driver);
+        signIn.open();
 
-        enterEmail("");
-        enterPassword("1233haah@");
+        signIn.enterEmail("");
+        signIn.enterPassword("1233haah@");
 
-        if (isSignInButtonEnabled()) {
-            clickSignIn();
+        if (signIn.isSignInButtonEnabled()) {
+            signIn.clickSignIn();
         }
 
-        WebElement errorMessage = wait().until(
-            ExpectedConditions.visibilityOfElementLocated(emailValidationBy())
-        );
-
         Assert.assertEquals(
-            errorMessage.getText(),
+            signIn.getEmailValidationText(),
             EMPTY_EMAIL_MESSAGE,
             "Message khi bỏ trống email không đúng"
         );
@@ -111,21 +41,18 @@ public class SignInTestCase extends BaseTest {
 
     @Test
     public void testSignin_EmptyPassword_ShowRequiredMessage() {
-        navigateToSignIn();
+        SignInPage signIn = new SignInPage(driver);
+        signIn.open();
 
-        enterEmail("heheh@gmail.com");
-        enterPassword("");
+        signIn.enterEmail("heheh@gmail.com");
+        signIn.enterPassword("");
 
-        if (isSignInButtonEnabled()) {
-            clickSignIn();
+        if (signIn.isSignInButtonEnabled()) {
+            signIn.clickSignIn();
         }
 
-        WebElement errorMessage = wait().until(
-            ExpectedConditions.visibilityOfElementLocated(passwordValidationBy())
-        );
-
         Assert.assertEquals(
-            errorMessage.getText(),
+            signIn.getPasswordValidationText(),
             EMPTY_PASSWORD_MESSAGE,
             "Message khi bỏ trống password không đúng"
         );
@@ -133,50 +60,50 @@ public class SignInTestCase extends BaseTest {
 
     @Test
     public void testSignin_NonExistingAccount_ShowErrorDialog() {
-        navigateToSignIn();
+        SignInPage signIn = new SignInPage(driver);
+        signIn.open();
 
-        enterEmail("mqmq@gmail.com");
-        enterPassword("1234hqhq))");
-        clickSignIn();
+        signIn.enterEmail("mqmq@gmail.com");
+        signIn.enterPassword("1234hqhq))");
+        signIn.clickSignIn();
 
-        WebElement errorContent = wait().until(
-            ExpectedConditions.visibilityOfElementLocated(commonErrorDialogContentBy())
-        );
-
+        String content = signIn.getCommonErrorDialogContentText();
         Assert.assertTrue(
-            errorContent.getText() != null && !errorContent.getText().trim().isEmpty(),
+            content != null && !content.trim().isEmpty(),
             "Không hiển thị nội dung lỗi cho tài khoản không tồn tại"
         );
     }
 
     @Test
     public void testSignin_ButtonDisabled_WhenOneFieldEmpty() {
-        navigateToSignIn();
+        SignInPage signIn = new SignInPage(driver);
+        signIn.open();
 
-        enterEmail("");
-        enterPassword("1233haah@");
+        signIn.enterEmail("");
+        signIn.enterPassword("1233haah@");
 
         Assert.assertTrue(
-            !isSignInButtonEnabled(),
+            !signIn.isSignInButtonEnabled(),
             "Nút Sign In phải disable khi email rỗng"
         );
 
-        enterEmail("heheh@gmail.com");
-        enterPassword("");
+        signIn.enterEmail("heheh@gmail.com");
+        signIn.enterPassword("");
 
         Assert.assertTrue(
-            !isSignInButtonEnabled(),
+            !signIn.isSignInButtonEnabled(),
             "Nút Sign In phải disable khi password rỗng"
         );
     }
 
     @Test
     public void testSignin_Success_WithExistingAccount() {
-        navigateToSignIn();
+        SignInPage signIn = new SignInPage(driver);
+        signIn.open();
 
-        enterEmail("mimi135@gmail.com");
-        enterPassword("123456hoho))");
-        clickSignIn();
+        signIn.enterEmail("mimi135@gmail.com");
+        signIn.enterPassword("123456hoho))");
+        signIn.clickSignIn();
 
         HomePage homePage = new HomePage(driver);
         homePage.waitUntilHomeReady();
