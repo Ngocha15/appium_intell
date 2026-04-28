@@ -14,6 +14,8 @@ public class SignInPage {
 
     public static final String EMPTY_EMAIL_MESSAGE = "Please enter your email";
     public static final String EMPTY_PASSWORD_MESSAGE = "Please enter your password";
+    public static final String EMAIL_VALIDATION_KEY = "qa.login.email.validation_message";
+    public static final String PASSWORD_VALIDATION_KEY = "qa.login.password.validation_message";
 
     private final AndroidDriver driver;
     private final WebDriverWait wait;
@@ -166,11 +168,11 @@ public class SignInPage {
     }
 
     public String getEmailValidationId() {
-        return "qa.login.email.validation_message";
+        return EMAIL_VALIDATION_KEY;
     }
 
     public String getPasswordValidationId() {
-        return "qa.login.password.validation_message";
+        return PASSWORD_VALIDATION_KEY;
     }
 
     public WebElement getValidationElement(String validationKey) {
