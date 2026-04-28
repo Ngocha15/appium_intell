@@ -211,10 +211,18 @@ public class SignInPage {
             try { text = message.getText(); } catch (Exception ignored) {}
             if (text != null && !text.trim().isEmpty()) return text.trim();
 
-            // Fallback: some Flutter elements expose the message via content-desc
+            // Fallback: parse message from content-desc
+            // Format: "qa.login.email.validation_message\nPlease enter your email"
             try {
                 String desc = message.getAttribute("content-desc");
-                if (desc != null && !desc.trim().isEmpty()) return desc.trim();
+                if (desc != null && !desc.trim().isEmpty()) {
+                    // Extract message part after the QA ID (after \n)
+                    String[] parts = desc.split("\n");
+                    if (parts.length > 1) {
+                        return parts[1].trim();
+                    }
+                    return desc.trim();
+                }
             } catch (Exception ignored) {}
 
             return "";
