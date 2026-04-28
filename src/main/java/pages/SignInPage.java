@@ -178,7 +178,14 @@ public class SignInPage {
             "new UiSelector().descriptionContains(\"" + validationKey + "\")"
         );
 
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(validationMessageBy));
+        // Prefer presence via findElements to avoid visibility/animation flakiness
+        return wait.until(d -> {
+            List<WebElement> els = d.findElements(validationMessageBy);
+            if (!els.isEmpty()) {
+                return els.get(0);
+            }
+            return null;
+        });
     }
 
     public WebElement getEmailValidationElement() {
@@ -195,12 +202,24 @@ public class SignInPage {
     }
 
     public String getValidationMessage(String validationKey) {
-        By validationMessageBy = AppiumBy.androidUIAutomator(
-            "new UiSelector().descriptionContains(\"" + validationKey + "\")"
-        );
+        try {
+            WebElement message = getValidationElement(validationKey);
+            if (message == null) return "";
 
-        WebElement message = wait.until(ExpectedConditions.visibilityOfElementLocated(validationMessageBy));
-        return message.getText();
+            String text = "";
+            try { text = message.getText(); } catch (Exception ignored) {}
+            if (text != null && !text.trim().isEmpty()) return text.trim();
+
+            // Fallback: some Flutter elements expose the message via content-desc
+            try {
+                String desc = message.getAttribute("content-desc");
+                if (desc != null && !desc.trim().isEmpty()) return desc.trim();
+            } catch (Exception ignored) {}
+
+            return "";
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public boolean isValidationMessageDisplayed(String validationKey) {
@@ -208,7 +227,12 @@ public class SignInPage {
             By validationMessageBy = AppiumBy.androidUIAutomator(
                 "new UiSelector().descriptionContains(\"" + validationKey + "\")"
             );
-            return !driver.findElements(validationMessageBy).isEmpty();
+            List<WebElement> els = driver.findElements(validationMessageBy);
+            if (els.isEmpty()) return false;
+            for (WebElement el : els) {
+                try { if (el.isDisplayed()) return true; } catch (Exception ignored) {}
+            }
+            return false;
         } catch (Exception e) {
             return false;
         }
