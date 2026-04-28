@@ -15,9 +15,6 @@ import java.time.Duration;
 
 public class SignInTestCase extends BaseTest {
 
-    private static final String EMPTY_EMAIL_MESSAGE = "Please enter your email";
-    private static final String EMPTY_PASSWORD_MESSAGE = "Please enter your password";
-
     // Use SignInPage for all sign-in interactions
 
     @Test
@@ -34,7 +31,7 @@ public class SignInTestCase extends BaseTest {
 
         Assert.assertEquals(
             signIn.getEmailValidationText(),
-            EMPTY_EMAIL_MESSAGE,
+            SignInPage.EMPTY_EMAIL_MESSAGE,
             "Message khi bỏ trống email không đúng"
         );
     }
@@ -53,7 +50,7 @@ public class SignInTestCase extends BaseTest {
 
         Assert.assertEquals(
             signIn.getPasswordValidationText(),
-            EMPTY_PASSWORD_MESSAGE,
+            SignInPage.EMPTY_PASSWORD_MESSAGE,
             "Message khi bỏ trống password không đúng"
         );
     }

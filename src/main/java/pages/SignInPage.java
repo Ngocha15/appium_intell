@@ -11,6 +11,9 @@ import java.time.Duration;
 
 public class SignInPage {
 
+    public static final String EMPTY_EMAIL_MESSAGE = "Please enter your email";
+    public static final String EMPTY_PASSWORD_MESSAGE = "Please enter your password";
+
     private final AndroidDriver driver;
     private final WebDriverWait wait;
 
