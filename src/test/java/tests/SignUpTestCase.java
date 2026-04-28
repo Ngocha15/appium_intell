@@ -80,6 +80,7 @@ public class SignUpTestCase extends BaseTest {
             !signupPage.isSignupButtonEnabled(),
             "Nút Sign Up vẫn bật khi chưa tick checkbox"
         );
+
     }
 
     // ===== POSITIVE TEST CASE (ĐỂ CUỐI) =====
@@ -97,7 +98,7 @@ public class SignUpTestCase extends BaseTest {
 
         signupPage.enterFullName(fullName);
         signupPage.enterEmail("user" + timestamp + "@gmail.com");
-        signupPage.enterPassword("Abc@1234");
+        signupPage.enterPassword("Abc@12345");
         signupPage.clickCheckbox();
         signupPage.clickSignupButton();
         homePage.waitUntilHomeReady();

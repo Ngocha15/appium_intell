@@ -20,7 +20,7 @@ public class BaseTest {
         UiAutomator2Options options = new UiAutomator2Options();
         options.setPlatformName("Android");
         options.setPlatformVersion("13");
-        options.setDeviceName("e7a425eb87f2");
+        options.setDeviceName("");
         options.setAutomationName("UiAutomator2");
 
         options.setAppPackage(APP_PACKAGE);
@@ -32,7 +32,7 @@ public class BaseTest {
         options.setCapability("appium:resetKeyboard", true);
 
         driver = new AndroidDriver(
-                new URL("http://192.168.0.119:4723/wd/hub"),
+                new URL("http://192.168.0.111:4723/wd/hub"),
                 options
         );
 
